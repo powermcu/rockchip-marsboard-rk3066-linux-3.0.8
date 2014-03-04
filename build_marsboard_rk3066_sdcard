@@ -1,0 +1,19 @@
+cd marsboard-rk3066-linux-3.0.8+
+rm -Rv ./modules/lib
+make mrproper
+
+export CORES=`nproc`
+
+ARCH=arm CROSS_COMPILE=../toolchain/arm-eabi-4.6/bin/arm-eabi- make marsboard_rk3066_sdcard_defconfig
+ARCH=arm CROSS_COMPILE=../toolchain/arm-eabi-4.6/bin/arm-eabi- make zImage -j$CORES
+ARCH=arm CROSS_COMPILE=../toolchain/arm-eabi-4.6/bin/arm-eabi- make CFLAGS_MODULE=-fno-pic modules -j$CORES
+ARCH=arm CROSS_COMPILE=../toolchain/arm-eabi-4.6/bin/arm-eabi- make modules_install INSTALL_MOD_PATH=./modules -j$CORES
+
+cd ..
+
+tools/mkbootimg --kernel marsboard-rk3066-linux-3.0.8+/arch/arm/boot/zImage --ramdisk initramfs/fakeramdisk.gz -o marsboard_rk3066_sdcardboot.img
+
+rm marsboard-rk3066-linux-3.0.8+/modules/lib/modules/3.0.8+/build
+rm marsboard-rk3066-linux-3.0.8+/modules/lib/modules/3.0.8+/source
+cp marsboard-rk3066-linux-3.0.8+/modules/rk30xxnand_ko.ko.3.0.8+ marsboard-rk3066-linux-3.0.8+/modules/lib/modules/3.0.8+/kernel/rk30xxnand_ko.ko
+tar -C marsboard-rk3066-linux-3.0.8+/modules/lib/modules/ -czf modules.tar.gz 3.0.8+/

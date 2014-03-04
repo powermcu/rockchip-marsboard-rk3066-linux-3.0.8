@@ -1,0 +1,17 @@
+#watch out, gz is removed upon gunzip, that's why I put the "cp" commands
+cp debian-3.0.8+.cpio.gz bk_debian-3.0.8+.cpio.gz  
+gunzip debian-3.0.8+.cpio.gz
+cp bk_debian-3.0.8+.cpio.gz debian-3.0.8+.cpio.gz
+mkdir a
+cd a
+cpio -i <../debian-3.0.8+.cpio
+
+
+#to create the cpio:
+find . -print -depth | cpio -ov > ../initramfs.cpio
+
+
+
+generate fakeramdisk.gz:
+dd if=/dev/zero of=fakeramdisk count=1M bs=1
+gzip -9 fakeramdisk

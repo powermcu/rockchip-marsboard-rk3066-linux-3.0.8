@@ -1,0 +1,41 @@
+if ARCH_RK30
+
+choice
+	prompt "RK30xx Board Type"
+	default MACH_RK30_SDK
+
+config MACH_RK30_SDK
+	bool "RK30 SDK board"
+
+config MACH_RK3066_SDK
+	bool "RK3066 SDK board"
+
+config MACH_RK30_DS1001B
+        bool "RK30 DS1001B board"
+
+config MACH_RK30_PHONE_PAD
+        bool "RK30 smart phone pad board"
+config MACH_RK30_PHONE
+	bool "RK30 smart phone board"
+	
+##$_rbox_$_modify_begin
+config MACH_RK30_BOX
+	bool "RK30 itv box hamburger board"
+	
+config MACH_RK30_BOX_PIZZA
+	bool "RK30 itv box pizza board"
+	
+config MACH_RK30_BOX_HOTDOG
+	bool "RK30 itv box hotdog board"
+		
+##$_rbox_$_modify_end
+
+config MACH_RK30_PHONE_LOQUAT
+	bool "RK30 smart phone loquat board"
+
+config MACH_RK30_PHONE_A22
+        bool "RK30 smart phone a22 board"
+	
+endchoice
+
+endif

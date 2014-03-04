@@ -1,0 +1,94 @@
+rk30_linux_initramfs
+====================
+
+This repo contains the initramfs.cpio required to compile Picuntu 0.9 RC3 Linux kernel for RK3066 ARM sticks, from Alok Sinha.
+
+It is fkubi's initramfs [1], for his RK3066 Linux kernel, who in turn based it on Debian's initramfs.cpio [2].
+
+
+Visit this url for complete steps on how to compile Picuntu Linux kernel source code:
+
+http://hwswbits.blogspot.com.es/2013/03/compiling-picuntu-kernel-ubuntu-linux.html
+
+
+
+
+
+COMPILING THE KERNEL
+====================
+
+We will start from Picuntu Linux' source code, along with several tools, to end up with a recovery.img file.
+This file is used to flash the recovery partition of an RK3066 stick, which will boot into Picuntu/Ubuntu Linux.
+
+
+-------------------
+WARNING: You DO NOT need to follow these steps unless you want to modify Picuntu's kernel!
+  The stock kernel from Alok Sinha works fine and is very easy to install. Follow this guide:
+         https://www.miniand.com/wiki/Picuntu+Linux+Step+by+Step+Installation
+-------------------
+
+
+Assuming the kernel is compiled from an x86 PC running an Ubuntu Linux:
+
+//get the right packages for the compiler [3]
+sudo apt-get install git-core gnupg flex bison gperf libsdl-dev libesd0-dev libwxgtk2.8-dev build-essential zip curl libncurses5-dev zlib1g-dev ia32-libs lib32z1-dev lib32ncurses5-dev gcc-multilib g++-multilib sharutils lzop
+
+//start out from the user's home and create "rk" folder for all the work
+cd ~
+mkdir rk
+cd rk
+
+//toolchains folder is where the ARM compiler toolchain will be downloaded to [3]
+git clone https://github.com/DooMLoRD/android_prebuilt_toolchains.git toolchains
+
+//tools folder is where the mkbootimg tool to create the recovery image will be downloaded to [4]
+git clone https://github.com/olegk0/tools.git
+
+//initramfs folder is where the Picuntu kernel's .config file looks for initramfs.cpio (see CONFIG_INITRAMFS_SOURCE)
+git clone https://github.com/Galland/rk30_linux_initramfs.git initramfs
+cd initramfs
+gzip -dc debian-3.0.8+fkubi.cpio.gz > initramfs.cpio
+cd ..
+
+//picuntu-3.0.8-alok is where we download the latest available Picuntu Linux kernel source code (0.9 RC3)
+git clone https://github.com/aloksinha2001/picuntu-3.0.8-alok.git
+cd picuntu-3.0.8-alok/
+
+//copy Picuntu 0.9 RC3 config file (actually extracted from a running Picuntu, located at /proc/config.gz)
+cp ../initramfs/config .config
+
+//set the target architecture and toolchain location (CHANGE the base folder if you are not using ~/rk/)
+export ARCH=arm
+export CROSS_COMPILE=~/rk/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-
+
+//launch the Kernel compilation (-j 4 indicates that 4 compiler threads run in parallel, I have a quad-core PC...)
+make -j 4
+
+//
+// Kernel compilation takes some minutes...
+// BTW, don't worry about the warnings while compiling
+//
+
+//last step is to generate the recovery.img to flash the recovery partition of the Android stick
+cd ..
+tools/mkbootimg --kernel picuntu-3.0.8-alok/arch/arm/boot/Image --ramdisk initramfs/fakeramdisk.gz --base 60400000 --pagesize 16384 --ramdiskaddr 62000000 -o recovery.img
+
+
+
+Now flash to the recovery partition and boot into Picuntu Linux, just like using the stock Picuntu kernel!
+
+
+
+
+REFERENCES
+==========
+
+[1] https://docs.google.com/folder/d/0B02hgWz32NpXcC1ONVBSLWx6RHc/edit
+
+[2] http://www.slatedroid.com/topic/41654-pre-alpha-03-ubuntu-linux-for-mk802-iii-ug802-mk808-ug007-imito-mx1/page__view__findpost__p__502961
+
+[3] http://www.armtvtech.com/armtvtechforum/viewtopic.php?p=5072#p5072
+
+[4] http://www.slatedroid.com/topic/41654-pre-alpha-03-ubuntu-linux-for-mk802-iii-ug802-mk808-ug007-imito-mx1/page__view__findpost__p__495617
+
+

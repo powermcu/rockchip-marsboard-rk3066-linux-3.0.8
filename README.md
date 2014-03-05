@@ -6,6 +6,12 @@ initramfs file Fork from https://github.com/Galland/rk30_linux_initramfs.git
 
 How To Build linux kernel?
 
+get the right packages for the compiler
+
+sudo apt-get install git-core gnupg flex bison gperf libsdl-dev libesd0-dev libwxgtk2.8-dev build-essential zip curl libncurses5-dev zlib1g-dev ia32-libs lib32z1-dev lib32ncurses5-dev gcc-multilib g++-multilib sharutils lzop
+
+Began to compile
+
 ./build_marsboard_rk3066_mtd
 
 ./build_marsboard_rk3066_recovery_sdcard

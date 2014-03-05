@@ -7,8 +7,12 @@ initramfs file Fork from https://github.com/Galland/rk30_linux_initramfs.git
 How To Build linux kernel?
 
 ./build_marsboard_rk3066_mtd
+
 ./build_marsboard_rk3066_recovery_sdcard
+
 ./build_marsboard_rk3066_sdcard
+
+
 
 How To Use LCD?
 

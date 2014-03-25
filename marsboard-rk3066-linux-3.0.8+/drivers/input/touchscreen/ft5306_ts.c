@@ -51,7 +51,7 @@ module_param(debug, int, S_IRUGO|S_IWUSR);
 static unsigned char g_vid;
 
 #define FT5X0X_TOUCH_SWAP_XY 0
-//#define CONFIG_FT5X0X_MULTITOUCH 1
+#define CONFIG_FT5X0X_MULTITOUCH 1
 
 /*
  * Added by yick @RockChip

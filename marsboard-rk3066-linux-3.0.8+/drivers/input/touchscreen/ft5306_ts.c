@@ -51,7 +51,7 @@ module_param(debug, int, S_IRUGO|S_IWUSR);
 static unsigned char g_vid;
 
 #define FT5X0X_TOUCH_SWAP_XY 0
-#define CONFIG_FT5X0X_MULTITOUCH 1
+//#define CONFIG_FT5X0X_MULTITOUCH 1
 
 /*
  * Added by yick @RockChip
@@ -65,8 +65,8 @@ uint16_t down_table	= 0;
 uint16_t up_table	= ~0;
 #endif
 
-#define SCREEN_MAX_X    1024
-#define SCREEN_MAX_Y    768
+#define SCREEN_MAX_X    480
+#define SCREEN_MAX_Y    800
 #define PRESS_MAX       255
 
 #define FT5X0X_NAME	"ft5x0x_ts" 
@@ -121,7 +121,7 @@ struct ft5x0x_ts_dev {
 
 static struct ft5x0x_ts_dev *g_dev;
 
-//Í¨¹ý´ò¿ª¹Ø±Õ¸ÃºêÀ´¿ª¹ØÏÂÔØÅäÖÃ.iÎÄ¼þ
+//Í¨ï¿½ï¿½ï¿½ò¿ª¹Ø±Õ¸Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.iï¿½Ä¼ï¿½
 #ifndef CONFIG_TOUCHSCREEN_FT5X06_FIRMWARE_DOWNLOAD
 //#define CONFIG_TOUCHSCREEN_FT5X06_FIRMWARE_DOWNLOAD
 #endif
@@ -686,6 +686,35 @@ static int ft5x0x_set_reg(u8 addr, u8 para)
     return 0;
 }
 
+static void ft5x_ts_release(void)
+{
+	struct ft5x0x_ts_dev *data = i2c_get_clientdata(g_dev->client);
+
+	input_report_abs(data->input_dev, ABS_PRESSURE, 0);
+	input_report_key(data->input_dev, BTN_TOUCH, 0);
+
+	input_sync(data->input_dev);
+	return;
+
+}
+static void ft5x_report_singletouch(void)
+{
+	struct ft5x0x_ts_dev *data = i2c_get_clientdata(g_dev->client);
+	struct ts_event *event = &data->event;
+
+	if (event->touch_point == 1) {
+		input_report_abs(data->input_dev, ABS_X, event->point[0].y);
+		input_report_abs(data->input_dev, ABS_Y, event->point[0].x);
+		input_report_abs(data->input_dev, ABS_PRESSURE, 200);
+	}
+	input_report_key(data->input_dev, BTN_TOUCH, 1);
+	input_sync(data->input_dev);
+	dev_dbg(&g_dev->client, "%s: 1:%d %d \n", __func__,
+	event->point[0].x, event->point[0].y);
+
+	return;
+}
+
 static int ft5x0x_read_data(void)
 {
 	struct ft5x0x_ts_dev *data = i2c_get_clientdata(g_dev->client);
@@ -734,6 +763,13 @@ static int ft5x0x_read_data(void)
 #endif
 
     RK29TP_DG("touch_point = %d\n", event->touch_point);
+
+    if (event->touch_point == 0) 
+    {
+	ft5x_ts_release();
+	return 1;
+    }
+    
 #ifdef CONFIG_FT5X0X_MULTITOUCH
 #if 0
     switch (event->touch_point) {
@@ -977,7 +1013,8 @@ static void ft5x0x_ts_pen_irq_work(struct work_struct *work)
 	mutex_lock(&ft_mutex);
 	ret = ft5x0x_read_data();	
 	if (ret == 0) {	
-		ft5x0x_report_value();
+		//ft5x0x_report_value();
+		ft5x_report_singletouch();
 	}
 	mutex_unlock(&ft_mutex);
     // enable_irq(g_dev->irq);

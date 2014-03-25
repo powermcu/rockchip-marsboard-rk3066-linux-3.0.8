@@ -1180,27 +1180,26 @@ ft5x0x_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 		input_set_capability(ft5x0x_ts->input_dev, EV_KEY, initkey_code[i]);
 	}
 #endif
-	input_dev->evbit[0] = BIT_MASK(EV_SYN) | BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS) ;
-	input_dev->absbit[0] = BIT(ABS_X) | BIT(ABS_Y) ;
 
-	__set_bit(INPUT_PROP_DIRECT, input_dev->propbit);//property bit set as input directly
-	input_mt_init_slots(input_dev, 255);
-
-
-	__set_bit(EV_ABS, input_dev->evbit);//set event bit
-
-	set_bit(ABS_MT_POSITION_X, input_dev->absbit);
-	set_bit(ABS_MT_POSITION_Y, input_dev->absbit);
+	set_bit(EV_ABS, input_dev->evbit);//set event bit
+	set_bit(EV_KEY, input_dev->evbit);
+	//	set_bit(ABS_MT_POSITION_X, input_dev->absbit);
+	//	set_bit(ABS_MT_POSITION_Y, input_dev->absbit);
 	//set_bit(ABS_MT_TOUCH_MAJOR, input_dev->absbit);
 	//set_bit(ABS_MT_WIDTH_MAJOR, input_dev->absbit);
 
-	input_mt_init_slots(input_dev, MAX_CONTACTS);
+	//	input_mt_init_slots(input_dev, MAX_CONTACTS);
+	set_bit(ABS_X, input_dev->absbit);
+	set_bit(ABS_Y, input_dev->absbit);
+	set_bit(ABS_PRESSURE, input_dev->absbit);
 
-	input_set_abs_params(input_dev,ABS_MT_POSITION_X, 0, SCREEN_MAX_X, 0, 0);
-	input_set_abs_params(input_dev,ABS_MT_POSITION_Y, 0, SCREEN_MAX_Y, 0, 0);
-	//input_set_abs_params(input_dev,ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-	//input_set_abs_params(input_dev,ABS_MT_WIDTH_MAJOR, 0, 255, 0, 0);
-	//input_set_abs_params(input_dev,ABS_MT_PRESSURE, 0, 255, 0, 0);
+	set_bit(BTN_TOUCH, input_dev->keybit);
+
+
+	input_set_abs_params(input_dev,ABS_X, 0, SCREEN_MAX_X, 0, 0);
+	input_set_abs_params(input_dev,ABS_Y, 0, SCREEN_MAX_Y, 0, 0);
+	input_set_abs_params(input_dev,ABS_PRESSURE, 0, PRESS_MAX, 0 , 0);
+
 
 	err = input_register_device(input_dev);
 	if (err) {

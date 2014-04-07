@@ -101,7 +101,7 @@ CONFIG_MM_OWNER=y
 # CONFIG_SYSFS_DEPRECATED is not set
 # CONFIG_RELAY is not set
 CONFIG_BLK_DEV_INITRD=y
-CONFIG_INITRAMFS_SOURCE="../initramfs/initramfs-mtd.cpio"
+CONFIG_INITRAMFS_SOURCE="../initramfs/initramfs-3.0.8+.cpio"
 CONFIG_INITRAMFS_ROOT_UID=0
 CONFIG_INITRAMFS_ROOT_GID=0
 CONFIG_RD_GZIP=y
@@ -465,7 +465,7 @@ CONFIG_ALIGNMENT_TRAP=y
 # CONFIG_USE_OF is not set
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="root=/dev/block/mtd/by-name/linuxroot init=/sbin/init loglevel=8 rootfstype=ext4 rootwait mtdparts=rk29xxnand:0x00008000@0x00002000(boot),0x00008000@0x0000A000(kernel),-@0x00012000(rootfs)"
+CONFIG_CMDLINE="root=/dev/mtdblock3 init=/sbin/init loglevel=8 rootfstype=ext4 rootwait mtdparts=rk29xxnand:0x00008000@0x00002000(boot),0x00008000@0x0000A000(kernel),-@0x00012000(rootfs)"
 # CONFIG_CMDLINE_FROM_BOOTLOADER is not set
 # CONFIG_CMDLINE_EXTEND is not set
 CONFIG_CMDLINE_FORCE=y

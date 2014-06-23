@@ -28,4 +28,10 @@ make marsboard_rk3066_mtd_defconfig
 
 make arch=ARM menuconfig
 
+use HY070CTP-A
+
 Device Drivers  --->  Graphics support  --->Display device support  --->  LCD Panel Select (RGB AT070TN93)  --->
+
+use HY070CTP-HD
+
+Device Drivers  --->  Graphics support  --->Display device support  --->  LCD Panel Select (RGB AT070TNA2)  --->

@@ -11,7 +11,7 @@ ARCH=arm CROSS_COMPILE=../toolchain/arm-eabi-4.6/bin/arm-eabi- make modules_inst
 
 cd ..
 
-tools/mkbootimg --kernel marsboard-rk3066-linux-3.0.8+/arch/arm/boot/zImage --ramdisk initramfs/fakeramdisk.gz -o marsboard_rk3066_mtdboot.img
+tools/mkbootimg --kernel marsboard-rk3066-linux-3.0.8+/arch/arm/boot/Image --ramdisk initramfs/fakeramdisk.gz --base 60400000 --pagesize 16384 --ramdiskaddr 62000000 -o marsboard_rk3066_mtdboot.img
 
 rm marsboard-rk3066-linux-3.0.8+/modules/lib/modules/3.0.8+/build
 rm marsboard-rk3066-linux-3.0.8+/modules/lib/modules/3.0.8+/source
